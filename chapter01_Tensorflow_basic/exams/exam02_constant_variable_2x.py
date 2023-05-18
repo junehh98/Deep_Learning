@@ -21,10 +21,20 @@ import tensorflow as tf # 2.x
 
 a = tf.constant([1.0, 2.0, 3.0])
 print(a.numpy())
+# [1. 2. 3.]
 
 b = tf.Variable([[0.123], [0.234], [0.345]])
 print(b.numpy())
+'''
+[[0.123]
+ [0.234]
+ [0.345]]
+'''
 
 c = tf.math.multiply(a, b)
 print(c.numpy())
-
+'''
+[[0.123      0.246      0.36900002]
+ [0.234      0.468      0.702     ]
+ [0.345      0.69       1.035     ]]
+'''
