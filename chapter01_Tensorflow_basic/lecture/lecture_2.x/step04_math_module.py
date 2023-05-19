@@ -30,9 +30,11 @@ print(tf.math.multiply(x, y, name='adder'))
 print(tf.math.divide(x, y, name='divide'))
 print(tf.math.mod(x, y, name='mod')) # [1 2 4 4]
 
+
 # 음수, 부호 반환 
 print('tf.neg=', tf.math.negative(x)) # [-1 -2  3 -4]
 print('tf.sign=', tf.math.sign(x)) # [ 1  1 -1  1]
+
 
 # 제곱/제곱근/거듭제곱 
 print(tf.math.abs(x)) # [1 2 3 4]
@@ -40,7 +42,23 @@ print(tf.math.square(x)) # 제곱 - [ 1  4  9 16]
 print(tf.math.sqrt([4.0, 9.0, 6.0])) # 제곱근
 print(tf.math.pow(x, 3)) # 거듭제곱-[  1   8 -27  64]
 
+
 # 지수와 로그 
 print('e=', tf.math.exp(1.0).numpy()) # e= 2.7182817
-print(tf.math.exp(2.0)) 
+print(tf.math.exp(2.0)) # 7.389056
 print(tf.math.log(8.0)) # e^? = 2.0794415
+
+'''
+tf.math.add() : 덧셈 함수
+tf.math.subtract() : 뺄셈 함수
+tf.math.multiply() : 곱셈 함수
+tf.math.divide() : 나눗셈 몫 계산 함수
+tf.math.mod() :나눗셈 나머지 계산 ) 함수
+tf.math.abs() : 절댓값 변경 함수
+tf.math.square() : 제곱 계산 함수
+tf.math.sqrt() : 제곱근 계산 함수
+tf.math.round() : 반올림 함수
+tf.math.pow() : 거듭제곱 함수
+tf.math.exp() : 지수 함수
+tf.math.log() :로그 함수
+'''

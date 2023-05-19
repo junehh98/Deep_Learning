@@ -30,15 +30,20 @@ import numpy as np # 입력변수(x변수) 생성
 
 # sigmoid 함수 정의 
 def sigmoid(x) : # x(입력변수) 
-    pass
+     y =  1 / (1 + tf.math.exp(-x))
+     return y
 
 
 # 입력변수(x) : 실인수 
 x_data = np.arange(-5.0, 6.0) # -5.0 ~ +5.0 
 
 
-    
-    
+real_x = sigmoid(x_data)
+
+for i in x_data:
+    y = sigmoid(i)
+    print(f'x : {i} -> y : {y}')
+
     
     
     
