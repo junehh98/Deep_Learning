@@ -17,10 +17,13 @@ x_data = X[:, 3] # 꽃잎 넓이(4)
 
 
 # Hyper parameter
-learning_rate = 0.001 # 학습율 
-iter_size = 100 # 학습횟수 
+learning_rate = 0.0001 # 학습율 
+iter_size = 1000 # 학습횟수 
 '''
 1차 테스트 : lr = 0.001, iter size = 100 -> 안정적인 형태   
+2차 테스트 : lr = 0.05, iter size = 100 -> 최소점 수렴 속도 빠름
+3차 테스트 : lr = 0.001, iter size = 100 -> 최소점 수렴 속도 느림, 학습횟수증가
+4차 테스트 : lr = 0.0001, iter size = 1000 -> 최소점 수렴 속도 느림
 '''
 
 X = tf.constant(y_data, dtype=tf.float32) 

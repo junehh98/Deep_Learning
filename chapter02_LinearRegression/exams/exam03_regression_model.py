@@ -75,6 +75,7 @@ for step in range(200) : # 0~99
     print('가중치(w) =', w.numpy(), '편향(b)=', b.numpy())
 
 
+
 # 8. 최적화된 model 검증
 # 1) MSE 평가 
 y_pred = linear_model(X) # 예측치 : 회귀방정식  
