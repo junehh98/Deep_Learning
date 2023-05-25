@@ -45,14 +45,22 @@ print(y.shape) # (1797,)
 
 
 # 2. X, y변수 전처리 
-X = None # X변수 정규화
-y = None # one-hot encoding
+x_data = minmax_scale(X) # # X변수 정규화
+y_data = OneHotEncoder().fit_transform(y.reshape([-1, 1])).toarray()
+
+X = tf.constant(x_data, tf.float32) # TensorShape([1797, 64])
+y = tf.constant(y_data, tf.float32) # TensorShape([1797, 10])
+
+X = X.numpy()
+y = y.numpy()
 
 
 # 3. w, b 변수 정의 : 초기값 난수 
-w = None
-b = None
- 
+w = tf.Variable(tf.random.normal([64,10]))
+w.dtype
+
+b = tf.Variable(tf.random.normal([10]))
+b.shape
 
 # 4. digits dataset split
 x_train, x_test, y_train, y_test = train_test_split(
@@ -78,19 +86,40 @@ def loss_fn() : #  인수 없음
 
 
 # 8. 최적화 객체 
-
+opt = tf.optimizers.Adam(learning_rate = 0.01)
 
 
 # 9. 반복학습 
+loss_values = []
+
+for step in range(1000):
+    opt.minimize(loss=loss_fn, var_list=[w,b])\
     
+    
+    if (step+1) % 100 == 0 :
+        loss_val = loss_fn().numpy()
+        loss_values.append(loss_val)
+        print('step =', (step+1), ", loss val = ", loss_fn().numpy())
+
     
 # 10. 최적화된 model 검증 
+y_pred = soft_fn(X).numpy()
+y_pred
 
+y_pred = tf.argmax(y_pred, axis=1)
+y_true = tf.argmax(y, axis=1)
+ 
+acc = accuracy_score(y_true, y_pred)
+print(acc)
 
 # 11. loss value vs epochs 시각화 
+import matplotlib.pyplot as plt
+
+plt.plot(loss_values, 'r--')
+plt.xlabel("Epochs")
+plt.ylabel("Loss value")
+plt.title("Loss vs Epochs")
+plt.show()
 
 
-
-
-
-
+print(loss_values[-10:])

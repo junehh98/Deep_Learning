@@ -70,7 +70,10 @@ for step in range(100) :
 y_pred = softmax_fn(X).numpy() # 예측치 반환 
 
 y_pred = tf.argmax(y_pred, axis = 1) # 10진수 
+y_pred
+
 y_true = tf.argmax(y, axis = 1) # 10진수 
+y_true
 
 acc = accuracy_score(y_true, y_pred)
 print('accuracy =',acc) 

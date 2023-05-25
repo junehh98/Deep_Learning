@@ -83,12 +83,42 @@ def loss_fn() : #  인수 없음
 
 
 # 6. 최적화 객체 
+opt = tf.optimizers.Adam(learning_rate=0.05)
 
 
 # 7. 반복학습 
+for step in range(1000):
+    opt.minimize(loss=loss_fn, var_list=[w, b])
+    
+    if (step+1) % 100 == 0 :
+        print('step =', (step+1), ", loss val = ", loss_fn().numpy())
+'''
+학습률(0.01) step = 1000 , loss val =  0.24172871
+학습률(0.05) step = 1000 , loss val =  0.10076756 (더 좋음)
+'''
 
 
 # 8. 최적화된 model 검증 
+y_pred = soft_fn(X).numpy()
+print(y_pred)
+
+
+y_pred = tf.argmax(y_pred, axis=1)
+y_true = tf.argmax(y, axis=1)
+
+
+acc= accuracy_score(y_true, y_pred)
+print(acc) # 0.98465
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -7,6 +7,7 @@ import tensorflow as tf
 from sklearn.metrics import accuracy_score #  model 평가 
 import numpy as np 
 
+
 # 1. x, y 공급 data 
 # [털, 날개]
 x_data = np.array(
@@ -26,9 +27,13 @@ y_data = np.array([ # one hot encoding
 # 2. X, Y변수 정의 : type 일치 - float32
 X = tf.constant(x_data, tf.float32) # [관측치, 입력수] - [6, 2]
 Y = tf.constant(y_data, tf.float32) # [관측치, 출력수] - [6, 3]
+X.shape
+Y.shape
+
 
 
 # 3. w, b변수 정의 : 초기값(난수) -> update 
+tf.random.set_seed(1)
 w = tf.Variable(tf.random.normal(shape=[2, 3])) # [입력수, 출력수]
 b = tf.Variable(tf.random.normal(shape=[3])) # [출력수]
 
@@ -66,7 +71,53 @@ for step in range(100) :
     if (step+1) % 10 == 0 :
         print('step =', (step+1), ", loss val = ", loss_fn().numpy())
   
-    
+
+
+# 9. model평가 : 분류정확도, f1 score
+y_pred = softmax_fn(X).numpy()
+print(y_pred)
+'''
+      y1             y2            y3              Y
+[[9.9245501e-01 6.7842230e-03 7.6068944e-04] --> 1 0 0 
+ [4.0042992e-03 9.7115827e-01 2.4837425e-02] --> 0 1 0
+ [7.4316617e-03 8.4935436e-03 9.8407483e-01] --> 0 0 1
+ [9.9245501e-01 6.7842230e-03 7.6068944e-04] --> 1 0 0
+ [9.8386937e-01 3.1693231e-05 1.6098905e-02] --> 1 0 0
+ [7.4316617e-03 8.4935436e-03 9.8407483e-01]]--> 0 0 1
+'''
+
+aa = tf.reduce_sum(y_pred, axis=1).numpy()
+
+
+# y_pred -> 10진수
+y_pred = tf.argmax(y_pred, axis=1).numpy() # index값이 나옴
+print(y_pred) # [0 1 2 0 0 2]
+
+
+# Y -> 10진수
+Y = tf.argmax(Y, axis=1).numpy()
+print(Y) # [0 1 2 0 0 2]
+
+acc = accuracy_score(Y, y_pred)
+print(acc) # 1.0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
