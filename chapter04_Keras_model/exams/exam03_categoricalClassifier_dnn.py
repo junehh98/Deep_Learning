@@ -50,20 +50,47 @@ x_train, x_val, y_train, y_val = train_test_split(
 
 from tensorflow.keras.layers import Input # input layer
 from tensorflow.keras.models import Model # DNN Model 생성
+from tensorflow.keras import Sequential # model 생성
+from tensorflow.keras.layers import Dense
+
+
 
 # 3. keras model & layer 구축(Functional API 방식) 
-
+model = Sequential()
 
 # 4. DNN model layer 구축 
 
+# hidden 1
+model.add(Dense(units=32, input_shape=(64,), activation = 'relu'))
+# hidden 2
+model.add(Dense(units=16, activation = 'relu'))
+# output layer
+model.add(Dense(units=10, activation = 'softmax'))
+
+
+model.summary()
+
+
 
 # 5. model compile : 학습과정 설정(다항 분류기)
+model.compile(optimizer='Adam',
+              loss = 'categorical_crossentropy',
+              metrics = ['accuracy'])
 
 
 # 6. model training : training dataset
+model_fit= model.fit(x=x_train, y=y_train, 
+          epochs=100, 
+          verbose=1,  
+          validation_data=(x_val, y_val)) 
 
 
 # 7. model evaluation : validation dataset
-
+print('*-*'*30)
+print('model evaluation') # loss: 0.3747 - accuracy: 0.8667
+model.evaluate(x=x_val, y=y_val)
+# [0.1305554360151291, 0.9722222089767456]
 
 # 8. model save : file save - HDF5 파일 형식 
+import h5py
+model.save('exams3_keras_softmax')
