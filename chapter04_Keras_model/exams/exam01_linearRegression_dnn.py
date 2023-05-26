@@ -11,33 +11,25 @@
             epochs = 50
     <조건3> 7. model evaluation : 검증용 데이터셋 이용     
 """
-from sklearn.datasets import load_boston  # dataset
-from sklearn.model_selection import train_test_split # split
 from sklearn.preprocessing import minmax_scale # 정규화(0~1) 
-from sklearn.metrics import mean_squared_error, r2_score
-from sklearn.datasets import fetch_california_housing
-                                              
+
 # keras model 관련 API
-import tensorflow as tf # ver 2.x
+from tensorflow.keras.datasets import boston_housing
 from tensorflow.keras import Sequential # model 생성 
 from tensorflow.keras.layers import Dense # DNN layer
 
 
-# 1. x,y data 생성 
-X, y = boston = load_boston(return_X_y=True)
-X.shape # (442, 10)
-y.shape # (442,)
+# 1. x,y data 생성 : keras datasests 이용 
+(x_train, y_train), (x_val, y_val) = boston_housing.load_data()
+x_train.shape # (404, 13)
+x_val.shape # (102, 13)
 
-# y 정규화 
-X = minmax_scale(X)
-y = minmax_scale(y)
+# 2. X, y변수 정규화 
+x_train = minmax_scale(x_train)
+x_val = minmax_scale(x_val)
 
-# 2. 공급 data 생성 : 훈련용, 검증용 
-x_train, x_val, y_train, y_val = train_test_split(
-    X, y, test_size = 0.3, random_state=1)
-x_train.shape 
-y_train.shape 
-
+y_train = y_train / y_train.max()
+y_val = y_val / y_val.max()
 
 # 3. keras model
 model = Sequential() 
@@ -45,6 +37,17 @@ print(model) # object info
 
 
 # 4. DNN model layer 구축 
+# hidden layer1 : w[13,64], b[64] 
+model.add(Dense(units=64, input_shape=(13,), activation='relu'))# 1층 
+
+# hidden layer2 : w[64,32], b[32]
+model.add(Dense(units=32, activation='relu'))# 2층
+
+# hidden layer2 : w[32,16], b[16]
+model.add(Dense(units=16, activation='relu'))# 3층
+
+# output layer : w[16,1], b[1] 
+model.add(Dense(units=1))# 4층 
 
 
 # 5. model compile : 학습과정 설정(다항 분류기)
@@ -58,7 +61,14 @@ model.summary()
 
 
 # 6. model training 
+model.fit(x=x_train, y=y_train,  # 훈련셋 : 70%
+          epochs=100,  # 반복학습횟수  
+          verbose=1,  # 콘솔 출력 
+          validation_data=(x_val, y_val))  # 검증셋 : 30% 
 
 
+# 7. 모델 평가
+score = model.evaluate(x_val, y_val, verbose=0)
+print('val_loss:', score[0])
+print('val_mae:', score[1])
 
-# 7. model evaluation : test dataset

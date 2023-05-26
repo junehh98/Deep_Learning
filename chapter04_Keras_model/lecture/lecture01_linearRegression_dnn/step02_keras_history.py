@@ -93,10 +93,16 @@ model_fit = model.fit(x=x_train, y=y_train, # 훈련셋
           validation_data=(x_val, y_val)) # 검증셋  
 
 
+
+
 # 6. model evaluation : validation data 
 loss_val, mae = model.evaluate(x_val, y_val)
 print('loss value =', loss_val)
 print('mae =', mae)
+
+print(model_fit.history) # {'loss':[1 ~ 100 mae값을 출력]}
+
+
 
 
 # 7. model history : epoch에 따른 model 평가  
