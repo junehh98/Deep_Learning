@@ -3,7 +3,9 @@
 step04_keras_mnist_batch.py
 
 1. Mnist dataset 다항분류기 
-2. Full batch vs Mini batch 
+2. Full batch vs Mini batch
+  - Full batch : 전체 훈련셋 공급(60,000) 
+  - Mini batch : 전체 훈련셋 분할 공급(100*600)
 """
 
 from tensorflow.keras.datasets import mnist # mnist load 
@@ -17,6 +19,7 @@ from tensorflow.keras.layers import Dense # DNN layer 구축
 import tensorflow as tf
 import numpy as np 
 import random as rd
+import time # 학습시간 체크 
 
 tf.random.set_seed(123)
 np.random.seed(123)
@@ -81,17 +84,39 @@ model.compile(optimizer='adam',
               loss='categorical_crossentropy', 
               metrics=['accuracy'])
 
+start_time = time.time()
 
 # 5. model training : train(70) vs val(30)
 model.fit(x=x_train, y=y_train, # 훈련셋 
-          epochs=10, # 반복학습 횟수           
+          epochs=10, # 반복학습 횟수
+          batch_size=100, # 1epoch=100*600          
           verbose=1, # 출력여부 
           validation_data= (x_val, y_val)) # 검증셋
-
+'''
+full batch vs mini batch 
+full batch : batch_size 생략 
+mini batch : batch_size 지정 
+'''
 
 # 6. model evaluation : val dataset 
 print('model evaluation')
 model.evaluate(x=x_val, y=y_val)
+
+stop_time = time.time() - start_time 
+
+print('소요시간 : ', stop_time)
+
+'''
+1차 : full batch 
+loss: 0.1004 - accuracy: 0.9769
+소요시간 :  38.784079790115356
+
+2차 : mini batch 
+loss: 0.0784 - accuracy: 0.9785
+소요시간 :  15.295456409454346
+'''
+
+
 
 
 

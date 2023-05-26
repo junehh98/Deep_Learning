@@ -68,9 +68,24 @@ model.add(Dense(units=3, activation = 'softmax')) # 3층
 # 4. model compile : 학습과정 설정(다항분류기) 
 from tensorflow.keras import optimizers
 
+# 사용자가 학습률 지정 
 model.compile(optimizer=optimizers.Adam(learning_rate=0.01), 
               loss = 'categorical_crossentropy',  
               metrics=['accuracy'])
+'''
+optimizer='adam' : default learning_rate=0.001
+'''
+
+
+
+
+
+
+
+
+
+
+
 
 
  
