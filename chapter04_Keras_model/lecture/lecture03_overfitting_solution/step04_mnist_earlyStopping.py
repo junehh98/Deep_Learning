@@ -4,13 +4,14 @@ step04_keras_mnist_earlyStopping.py
 
 1. Dropout : 무작위 네트워크 삭제 
 2. EarlyStopping : loss value에 변화가 없는 경우 학습 조기종료
+ - 검증셋 기준으로
 """
 
 from tensorflow.keras.datasets.mnist import load_data # MNIST dataset 
 from tensorflow.keras.utils import to_categorical # Y변수 : encoding
 from tensorflow.keras import Sequential # model 생성
 from tensorflow.keras.layers import Dense, Dropout # DNN layer 구축 
-from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras.callbacks import EarlyStopping # 조기종료
 
 import matplotlib.pyplot as plt # images 
 
@@ -84,12 +85,21 @@ model.compile(optimizer='adam',
               metrics=['accuracy'])
 
 
+###############################################################################
+# 4회 epoch 연속으로 평가 손실이 개선되지 않은 경우 조기 종료
+# 최소변화량이 0.001미만이면 조기종료
+callback = EarlyStopping(monitor='val_loss', min_delta = 0.001, patience =4)
+###############################################################################
+
+
 # 5. model training : train(60,000) vs val(10,000) 
 model_fit = model.fit(x=x_train, y=y_train, # 훈련셋 
-          epochs=15, # 반복학습
+          epochs=30, # 반복학습
           batch_size = 100, # mini batch
           verbose=1, # 출력여부 
-          validation_data=(x_val, y_val)) 
+          validation_data=(x_val, y_val),
+          callbacks=[callback]) 
+# --->>  9번에서 조기종료됨
 
 
 # 6. model evaluation : val dataset 

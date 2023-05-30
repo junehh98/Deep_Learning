@@ -4,7 +4,9 @@ Keras : DNN model 생성을 위한 고수준 API
  
 Keras 이항분류기 
  - X변수 : minmax_scale(0~1)
- - y변수 : one hot encoding(2진수 인코딩)
+ - y변수 : one hot encoding(2진수 인코딩) 
+   0 -> 1 0
+   1 -> 0 1
 """
 
 from sklearn.datasets import load_iris # dataset 
@@ -29,23 +31,27 @@ rd.seed(123)
 
 # 1. dataset load & 전처리 
 X, y = load_iris(return_X_y=True)
-X.shape
-y.shape
-
-
+X.shape # (150, 4)
+y.shape 
+y
 # X변수 : 정규화
-X = minmax_scale(X[:100]) # 100개 선택 
-
+X = minmax_scale(X[:100]) # 100개 선택(0~1)
+X.shape # (100, 4) 
 
 # y변수 : 10진수(label encoding)   
 y = y[:100] # 100개 선택 
+y.shape # (100,)
+y # 0 or 1
+
+
+# one-hot encoding : 10진수 -> 2진수 
+y = to_categorical(y) # 권장 
+y
 '''
-10진수(label)  2진수(one-hot)
-0           -->  1 0
-1           -->  0 1
-'''
-y = to_categorical(y) # num_classes=2 
-y.shape
+10진수(lebel)  2진수(one-hot)
+0    -> 1 0
+1    -> 0 1
+''' 
 
 
 # 2. 공급 data 생성 : 훈련용, 검증용 
@@ -55,34 +61,32 @@ x_train, x_val, y_train, y_val = train_test_split(
 
 # 3. keras layer & model 생성
 
-model = Sequential()
+model = Sequential() # keras model 생성 
 
 # hidden layer1 : w[4, 8], b=8 
-model.add(Dense(units=8, input_shape =(4, ), activation = 'relu')) # 1층 
+model.add(Dense(units=8, input_shape =(4,), activation = 'relu')) # 1층 
 
 # hidden layer2 : w[8, 4], b=4 
 model.add(Dense(units=4, activation = 'relu')) # 2층 
 
-# output layer : w[4, 2], b=2
+# output layer : w[4, 2], b=2 
 model.add(Dense(units=2, activation = 'sigmoid')) # 3층 
 '''
- 10진수(label)   : output layer : units=1
- 2진수(one hot)  : output layer : units=2
- label이 3개이상이면 sigmoid -> softmax
+y - 10진수(lebel) : output layer : units=1
+y - 2진수(one-hot) : output layer : units=2
 '''
 
-
 # 4. model compile : 학습과정 설정(이항분류기)
-model.compile(optimizer='adam', # 최적화 알고리즘(adam or sgd)
-              loss = 'binary_crossentropy', # 손실함수(crossentropy)
-              metrics=['accuracy']) # 평가방법
+model.compile(optimizer='adam', # 최적화 알고리즘(adam or sgd) 
+              loss = 'binary_crossentropy', # 손실함수(crossentropy) 
+              metrics=['accuracy']) # 평가방법 
 
 
 # 5. model training : train(70) vs val(30) 
-model_fit= model.fit(x=x_train, y=y_train, 
-          epochs=20,  
-          verbose=1,  
-          validation_data=(x_val, y_val)) 
+model.fit(x=x_train, y=y_train, # 훈련셋 
+          epochs=25,  # 반복학습 횟수 
+          verbose=1,  # 출력 여부 
+          validation_data=(x_val, y_val))  # 검증셋 
 
 
 # 6. model evaluation : val dataset 
@@ -92,21 +96,7 @@ model.evaluate(x=x_val, y=y_val)
 
 
 
-import matplotlib.pyplot as plt
-plt.plot(model_fit.history['loss'], 'y', label='train loss value')
-plt.plot(model_fit.history['val_loss'], 'r', label='val loss value')
-plt.xlabel('epochs')
-plt.ylabel('loss value')
-plt.legend(loc='best')
-plt.show()
 
-# 2) epoch vs mae
-plt.plot(model_fit.history['mae'], 'y', label='train mae')
-plt.plot(model_fit.history['val_mae'], 'r', label='val mae')
-plt.xlabel('epochs')
-plt.ylabel('mae')
-plt.legend(loc='best')
-plt.show()
 
 
 

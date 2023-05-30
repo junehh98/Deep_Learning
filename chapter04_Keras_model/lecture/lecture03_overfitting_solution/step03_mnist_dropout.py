@@ -9,7 +9,9 @@ from tensorflow.keras.datasets.mnist import load_data # MNIST dataset
 from tensorflow.keras.utils import to_categorical # Y변수 : encoding
 from tensorflow.keras import Sequential # model 생성
 from tensorflow.keras.layers import Dense # DNN layer 구축 
+from tensorflow.keras.layers import Dropout
 import matplotlib.pyplot as plt # images 
+
 
 import tensorflow as tf
 import numpy as np 
@@ -59,12 +61,15 @@ input_shape = (784,)
 
 # hidden layer1 : [784, 128] -> [input, output]
 model.add(Dense(units=128, input_shape = input_shape, activation = 'relu')) # 1층 
+model.add(Dropout(rate=0.3)) # 30%제거
 
 # hidden layer2 : [128, 64] -> [input, output]
 model.add(Dense(units=64, activation = 'relu')) # 2층 
+model.add(Dropout(rate=0.1)) # 10%제거
 
 # hidden layer3 : [64, 32] -> [input, output]
 model.add(Dense(units=32, activation = 'relu')) # 3층
+model.add(Dropout(rate=0.1)) # 10% 제거
 
 # output layer : [32, 10] -> [input, output]
 model.add(Dense(units=10, activation = 'softmax')) # 4층 
@@ -79,7 +84,7 @@ model.compile(optimizer='adam',
 
 # 5. model training : train(60,000) vs val(10,000)
 model_fit = model.fit(x=x_train, y=y_train, # 훈련셋 
-          epochs=15, # 반복학습 
+          epochs=12, # 반복학습 
           batch_size = 100, # mini batch
           verbose=1, # 출력여부 
           validation_data=(x_val, y_val)) # 검증셋 
@@ -97,6 +102,7 @@ print(model_fit.history.keys())
 
 
 # loss vs val_loss 
+import matplotlib.pyplot as plt
 plt.plot(model_fit.history['loss'], 'y', label='train loss')
 plt.plot(model_fit.history['val_loss'], 'r', label='val loss')
 plt.xlabel('epochs')

@@ -84,11 +84,11 @@ input_shape = (784,)
 
 # hidden layer1 : [784, 128] -> [input, output]
 model.add(Dense(units=128, input_shape = input_shape, activation = 'relu', 
-                kernel_regularizer=regularizers.l1(0.01))) # 1층 
+                kernel_regularizer=regularizers.l2(0.01))) # 1층 
 
 # hidden layer2 : [128, 64] -> [input, output]
 model.add(Dense(units=64, activation = 'relu',
-          kernel_regularizer=regularizers.l1(0.01))) # 2층 
+          kernel_regularizer=regularizers.l2(0.01))) # 2층, L1규제에는 l1사용
 
 # hidden layer3 : [64, 32] -> [input, output]
 model.add(Dense(units=32, activation = 'relu')) # 3층

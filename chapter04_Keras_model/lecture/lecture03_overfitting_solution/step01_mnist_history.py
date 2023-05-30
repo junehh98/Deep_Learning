@@ -28,7 +28,9 @@ rd.seed(123)
 (x_train, y_train), (x_val, y_val) = load_data() # (images, labels)
 
 x_train.shape # (60000, 28, 28) 
-y_train.shape # (60000,)
+y_train.shape # (60000,) : 10진수(0~9)
+
+x_train[0].shape # (28, 28)
 
 
 # 2. x,y변수 전처리 
@@ -57,7 +59,8 @@ y_train.shape # (60000, 10)
 model = Sequential()
 
 
-input_shape = (784,) 
+input_shape = (784,) # 입력자료 모양 
+
 
 # hidden layer1 : [784, 128] -> [input, output]
 model.add(Dense(units=128, input_shape = input_shape, activation = 'relu')) # 1층 
@@ -89,7 +92,8 @@ model_fit = model.fit(x=x_train, y=y_train, # 훈련셋
 # 6. model evaluation : val dataset 
 print('='*30)
 print('model evaluation')
-model.evaluate(x=x_val, y=y_val)
+model.evaluate(x=x_val, y=y_val) # [0.09336086362600327, 0.9794999957084656]
+
 
 
 # 7. model history 
