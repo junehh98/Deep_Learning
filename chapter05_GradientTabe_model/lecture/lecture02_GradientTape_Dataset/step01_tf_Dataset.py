@@ -74,7 +74,7 @@ for X_train, y_train in train_ds : # 순서대로 1개 slice 넘김
 # 전체 image -> 서플링 없음 -> 1,000개 image 묶음(1000*10 = slices 10)
 test_ds = Dataset.from_tensor_slices((X_val, y_val)).batch(1000) 
 
-for X_val, y_val in train_ds : # 순서대로 1개 slice 넘김
+for X_val, y_val in test_ds : # 순서대로 1개 slice 넘김
     print("X={}, y={}".format(X_val.shape, y_val.shape)) 
 
 
