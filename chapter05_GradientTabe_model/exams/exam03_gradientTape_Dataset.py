@@ -29,8 +29,7 @@ from tensorflow.python.data import Dataset # dataset 생성
 from tensorflow.keras.layers import Dense, Flatten # layer 구축 
 from tensorflow.keras.datasets.cifar10 import load_data # Cifar10
 from tensorflow.keras.utils import to_categorical
-from tensorflow.keras import Sequential # keras model 
-from tensorflow.keras import losses,optimizers,metrics#손실,최적화,평가 
+from tensorflow.keras import optimizers,metrics#최적화,평가 
 
 # 단계1. dataset load & preprocessing
 print('data loading')
@@ -43,34 +42,57 @@ print(y_train.shape) # (50000, 1) : 2차원
 x_train = x_train / 255.0
 x_val = x_val / 255.0
 
+# one-hot encoding 
+y_train = to_categorical(y_train)
+y_val = to_categorical(y_val)
 
 
 # 단계2. Dataset 생성 
+# train_ds(images, labels) 
+train_ds = Dataset.from_tensor_slices((x_train, y_train)).shuffle(10000).batch(50) 
+
+# test_ds(images, labels)
+val_ds = Dataset.from_tensor_slices((x_val, y_val)).batch(100)
 
 
 
 # 단계3. 순방향 step : model layer 정의  
 class Model(tf.keras.Model): # tf.keras Model 상속 
-  pass
+  def __init__(self): # 생성자 
+    super().__init__()         
+    tf.random.set_seed(34) # w, b 시드값 지정 
+    self.f = Flatten() # 2d/3d -> 1d
+    self.d1 = Dense(256, activation='relu') # hidden layer1
+    self.d2 = Dense(128, activation='relu') # hidden layer2
+    self.d3 = Dense(64, activation='relu') # hidden layer3
+    self.d4 = Dense(10, activation='softmax') # output layer
+
+  def call(self, X): # call 메서드 : self 메서드          
+    x = self.f(X)      
+    x = self.d1(x)    
+    x = self.d2(x)
+    x = self.d3(x)
+    x = self.d4(x)
+    return x # y_pred
 
 
 
-# 단계4. loss function : losses 모듈 대체 
-loss = losses.SparseCategoricalCrossentropy(from_logits=True)
-
+# 단계4. loss function 
+def loss_fn(X, y): # 입력, 정답 
+    global model # model 객체 
+    y_pred = model(X) # model.call(X) : 예측치       
+    loss = -tf.reduce_mean(y*tf.math.log(y_pred) + (1-y)*tf.math.log(1-y_pred)) 
+    return loss # 손실 반환
 
 # 단계5. model & optimizer
 model = Model()
-optimizer = optimizers.Adam() # lr : 자동설정(lr=0.1)
+optimizer = optimizers.Adam(0.001) # lr : 자동설정(lr=0.1)
 
 
 # 단계6. model test : 1epoch -> train/test loss and accuracy 측정 
 train_loss = metrics.Mean() # 전체 원소 -> 평균 객체 반환 
-train_acc = metrics.SparseCategoricalAccuracy() # 분류정확도 객체 반환
+train_acc = metrics.CategoricalAccuracy() # 분류정확도 객체 반환
   
-test_loss = metrics.Mean()
-test_acc = metrics.SparseCategoricalAccuracy()
-
 
 # 단계7. 역방향 step : tf.GradientTape 클래스 이용 
 @tf.function # 연산 속도 향상 
@@ -78,7 +100,7 @@ def train_step(images, labels): # train step
     with tf.GradientTape() as tape:
         # 1) 순방향    
         preds = model(images, training=True) # 예측치  
-        loss_value = loss(labels, preds) # 손실값 
+        loss_value = loss_fn(images, labels) # 손실값 
         
         # 2) 역방향 
         grads = tape.gradient(loss_value, model.trainable_variables)
@@ -89,17 +111,19 @@ def train_step(images, labels): # train step
         train_loss(loss_value) # 1epoch loss 평균 : object(params) 
         train_acc(labels, preds) # 1epoch accuracy : object(params) 
   
-@tf.function # # 연산 속도 향상
-def test_step(images, labels): # test step
-    preds = model(images, training=False) # 최적화된 model -> 예측치
-    loss_value = loss(labels, preds) # 손실값 
-    
-    # 1epoch loss, acc save 
-    test_loss(loss_value)
-    test_acc(labels, preds)
-
 
 epochs = 20
 
 # 단계8. model training
+for epoch in range(epochs) :
+    # 초기화   
+    train_loss.reset_states()
+    train_acc.reset_states()  
+    
+    for X, y in train_ds: # 훈련셋 공급 
+        train_step(X, y) # 순방향 -> 역방향 
+
+    form = 'Epoch {0}, Train loss: {1:.6f}, Train acc: {2:.6f}'
+    print(form.format(epoch+1, train_loss.result(), train_acc.result()))
  
+#Epoch 20, Train loss: 0.198054, Train acc: 0.547680
