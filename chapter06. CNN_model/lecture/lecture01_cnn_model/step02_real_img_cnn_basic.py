@@ -43,6 +43,10 @@ conv2d = tf.nn.conv2d(Img, Filter,
 conv2d_img = np.swapaxes(conv2d, 0, 3)
 conv2d_img.shape # (5, 256, 384, 1)  
 
+output_h = (512-9) / 2 + 1 # 252.5
+output_w = (768-9) / 2 + 1 # 380.5
+
+
 fig = plt.figure(figsize = (20, 6))  
 for i, img in enumerate(conv2d_img) :
     fig.add_subplot(1, 5, i+1) 
@@ -57,6 +61,12 @@ pool = tf.nn.max_pool(conv2d, ksize=[1,7,7,1],
  
 # 폴링(Pool) 연산 결과 
 pool_img = np.swapaxes(pool, 0, 3)
+pool_img.shape # (5, 64, 96, 1)
+
+
+output_h = (256-7) / 4 + 1 # 63.25
+output_w = (384-7) / 4 + 1 # 95.25
+
 
 fig = plt.figure(figsize = (20, 6))    
 for i, img in enumerate(pool_img) :
@@ -64,7 +74,6 @@ for i, img in enumerate(pool_img) :
     plt.imshow(img) 
 plt.show()
     
-
 
 
 

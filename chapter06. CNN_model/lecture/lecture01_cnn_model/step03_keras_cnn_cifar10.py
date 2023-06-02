@@ -28,6 +28,7 @@ x_val.shape # image : (10000, 32, 32, 3)
 y_val.shape # label : (10000, 1)
 
 
+
 # 2. image dataset 전처리
 
 # 1) image pixel 실수형 변환 
@@ -38,10 +39,16 @@ x_val = x_val.astype(dtype ='float32')
 x_train = x_train / 255
 x_val = x_val / 255
 
+'''
+for i in x_train:
+    plt.imshow(i)
+    plt.show()
+'''
 
 # 3) label 전처리 : 10진수 -> one hot encoding(2진수) 
 y_train = to_categorical(y_train, num_classes=10)
 y_val = to_categorical(y_val, num_classes=10)
+
 
 
 # 3. CNN model & layer 구축 
@@ -50,12 +57,21 @@ input_shape = (32, 32, 3) # input images
 # 1) model 생성 
 model = Sequential()
 
+
 # 2) layer 구축 
 # Conv layer1 : 기본값(strides=[1,1,1,1], padding='VALID')
 model.add(Conv2D(filters=32, kernel_size=(5, 5),  
                  input_shape = input_shape, activation='relu')) 
-model.add(MaxPool2D(pool_size=(3, 3), strides=(2, 2))) 
+'''
+filter : kernel_size(5x5)
 
+'''
+
+model.add(MaxPool2D(pool_size=(3, 3), strides=(2, 2))) 
+'''
+window size = pool_size
+strides : window 이동 칸
+'''
 
 # Conv layer2 
 model.add(Conv2D(filters=64, kernel_size=(5, 5), activation='relu')) 
@@ -65,7 +81,7 @@ model.add(MaxPool2D(pool_size=(3, 3), strides=(2, 2)))
 model.add(Conv2D(filters=128, kernel_size=(3, 3), activation='relu'))
 # MaxPool 없음 
 
-# 전결합층 : Flatten layer 
+# 전결합층 : Flatten layer : 3/2d -> 1d
 model.add(Flatten()) 
 
 # DNN1 : hidden layer 
