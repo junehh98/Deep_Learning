@@ -31,7 +31,7 @@ from sklearn.preprocessing import LabelEncoder, OneHotEncoder # y변수 전처�
 import pandas as pd
  
 # csv file load
-bmi = pd.read_csv('C:/ITWILL/6_DeepLearning/data/bmi.csv')
+bmi = pd.read_csv('/Users/junehh98/Desktop/itwill/6_DeepLearning/data/bmi.csv')
 print(bmi.info())
 
 bmi['label'].value_counts() 

@@ -8,14 +8,14 @@ import pandas as pd  # csv file
 from sklearn.preprocessing import minmax_scale # 정규화 
 from sklearn.metrics import mean_squared_error # model 평가 
 
-iris = pd.read_csv('C:/ITWILL/6_DeepLearning/data/iris.csv')
+iris = pd.read_csv('/Users/junehh98/Desktop/itwill/6_DeepLearning/data/iris.csv')
 print(iris.info())
 
 # 1. X, y data 생성
 x_data = iris['Sepal.Length'] 
 y_data = iris['Petal.Length']
 
-# x_data.dtype() # numpy.dtype[float64]
+x_data.dtype # dtype('float64')
 x_data.mean() # 5.843333333333334
 
 # 라이브러리 사용 최대-최소 스케일링

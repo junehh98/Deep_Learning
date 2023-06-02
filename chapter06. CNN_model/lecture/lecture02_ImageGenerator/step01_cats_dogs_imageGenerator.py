@@ -55,7 +55,7 @@ model.compile(optimizer = 'adam',
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 # dir setting
-base_dir = "C:\\ITWILL\\6_DeepLearning\\data\\cats_and_dogs"
+base_dir = "//Users/junehh98//Desktop//itwill//6_DeepLearning//data//cats_and_dogs"
 
 train_dir = os.path.join(base_dir, 'train_dir') 
 validation_dir = os.path.join(base_dir, 'validation_dir')
